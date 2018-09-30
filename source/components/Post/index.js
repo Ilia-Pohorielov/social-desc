@@ -1,30 +1,46 @@
 // Core
 import React, { Component } from 'react';
 import moment from 'moment';
-import PropTypes from 'prop-types';
+import { func, string, array, number } from 'prop-types';
 
 // Components
+import Like from 'components/Like';
 import { Consumer } from 'components/HOC/withProfile';
-
 
 // Instruments
 import Styles from './styles.m.css';
 
 export default class Feed extends Component {
     static propTypes = {
-        comment: PropTypes.string.isRequired,
-        created: PropTypes.number.isRequired,
+        _likePost: func.isRequired,
+        comment: string.isRequired,
+        created: number.isRequired,
+        id: string.isRequired,
+        likes: array.isRequired,
+        removePost: func.isRequired,
     };
 
+    constructor() {
+        super();
+        this._removePost = this._removePost.bind(this);
+    }
+    _removePost() {
+        const { removePost, id } = this.props;
+        removePost(id);
+    }
     render(){
 
-        const { comment, created } = this.props;
+        const { comment, created, _likePost, id, likes } = this.props;
 
         return (
             <Consumer>
                 {
                     (context) => (
-                        <section className={ Styles.post }>
+                        <section className = { Styles.post }>
+                            <span
+                                className = { Styles.cross }
+                                onClick = { this._removePost }
+                            />
                             <img src ={ context.avatar } alt = { context.currentUserFirstName } />
                             <a href ="#">{`
                                     ${ context.currentUserFirstName } ${ context.currentUserLastName }
@@ -32,6 +48,12 @@ export default class Feed extends Component {
                             </a>
                             <time>{moment.unix(created).format('MMMM D h:mm:ss a')}</time>
                             <p>{ comment }</p>
+                            <Like
+                                _likePost = { _likePost }
+                                id = { id }
+                                likes = { likes }
+                                { ...context }
+                            />
                         </section>
                     )
                 }
