@@ -7,19 +7,16 @@ import Composer from '../Composer';
 import Post from '../Post';
 import StatusBar from "../StatusBar";
 import Spinner from 'components/Spinner';
+import { withProfile } from 'components/HOC/withProfile';
+import Catcher from 'components/Catcher';
 
 // Instruments
 import Styles from './styles.m.css';
 import { getUniqueID, delay } from 'instruments';
 
+@withProfile
 export default class Feed extends Component {
-    constructor () {
-        super();
-        this._createPost = this._createPost.bind(this);
-        this._setPostsFetchingState = this._setPostsFetchingState.bind(this);
-        this._likePost = this._likePost.bind(this);
-        this._removePost = this._removePost.bind(this);
-    }
+
     state = {
         posts: [
             {
@@ -38,13 +35,13 @@ export default class Feed extends Component {
         isSpinning : false,
     };
 
-    _setPostsFetchingState (state) {
+    _setPostsFetchingState = (state) => {
         this.setState({
-            isSpinning: state
+            isSpinning: state,
         });
     };
 
-    async _createPost (comment) {
+    _createPost = async (comment) => {
         this._setPostsFetchingState(true);
 
         const post = {
@@ -59,9 +56,9 @@ export default class Feed extends Component {
             posts: [post, ...posts],
             isSpinning : false,
         }));
-    }
+    };
 
-    async _likePost(id) {
+    _likePost = async (id) => {
         const { currentUserFirstName, currentUserLastName } = this.props;
 
         this._setPostsFetchingState(true);
@@ -88,29 +85,32 @@ export default class Feed extends Component {
         this.setState({
             posts: newPosts,
             isSpinning: false,
-        })
-    }
-
-    _removePost(id) {
-
-        const newPosts = this.state.posts.filter((post) => {
-            if ( post.id === id ) {
-                return null;
-            }
-
-            return post;
         });
+    };
+
+    _removePost = (id) => {
+
+        const newPosts = this.state.posts.filter((post) => post.id !== id );
 
         this.setState({
             posts: newPosts,
         });
-    }
+
+    };
 
     render(){
         const { posts, isSpinning } = this.state;
 
         const postsJSX = posts.map((post) => {
-           return <Post key = { post.id } { ...post } _likePost = { this._likePost } removePost = { this._removePost } />;
+           return(
+               <Catcher key = { post.id }>
+                   <Post
+                       { ...post }
+                       _likePost = { this._likePost }
+                       removePost = { this._removePost }
+                   />;
+               </Catcher>
+               )
         });
 
         return (
