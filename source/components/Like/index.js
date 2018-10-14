@@ -8,8 +8,11 @@ import { withProfile } from 'components/HOC/withProfile';
 
 // Instruments
 import Styles from './styles.m.css';
+import { api, TOKEN, GROUP_ID } from "../../config/api";
+import { socket } from "socket/init";
 
-/*@withProfile*/
+
+@withProfile
 export default class Like extends Component {
 
     static propTypes = {
@@ -48,11 +51,9 @@ export default class Like extends Component {
 
     _getLikedByMe = () => {
         const { currentUserFirstName, currentUserLastName, likes } = this.props;
-
         return likes.some(({ firstName, lastName }) => {
-           return `${ firstName } ${ lastName }` === `${ currentUserFirstName } ${ currentUserLastName }`
+            return `${ firstName } ${ lastName }` === `${ currentUserFirstName } ${ currentUserLastName }`;
         });
-
     };
 
     _getLikeStyles = () => {
@@ -82,7 +83,6 @@ export default class Like extends Component {
         const { likes, currentUserLastName, currentUserFirstName } = this.props;
 
         const likedByMe = this._getLikedByMe();
-
         if(likes.length === 1 && likedByMe) {
             return `${currentUserFirstName} ${currentUserLastName}`;
         } else if (likes.length === 2 && likedByMe ) {
@@ -99,7 +99,6 @@ export default class Like extends Component {
         const likeStyles = this._getLikeStyles();
         const likersList = this._getLikersList();
         const likesDescription = this._getLikesDescription();
-
         return (
             <section className = { Styles.like }>
                 <span className = { likeStyles } onClick = { this._likePost }>Like</span>

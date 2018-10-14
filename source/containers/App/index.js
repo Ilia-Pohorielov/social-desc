@@ -1,6 +1,5 @@
 // Core
 import React, { Component } from 'react';
-import { hot } from 'react-hot-loader';
 
 // Components
 import Catcher from 'components/Catcher';
@@ -12,8 +11,8 @@ import avatar from 'theme/assets/lisa';
 
 const options = {
     avatar,
-    currentUserFirstName: 'Lisa',
-    currentUserLastName: 'Simpson',
+    currentUserFirstName: 'Илья',
+    currentUserLastName: 'Погорелов',
 };
 
 export default class App extends Component {

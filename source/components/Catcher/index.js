@@ -25,11 +25,9 @@ export default class Catcher extends Component {
     }
 
     render() {
-        console.log('catcher');
-
         if (this.state.error) {
             return (
-                <section className= { Styles.catcher } >
+                <section className = { Styles.catcher } >
                     <span>A mysterious error occured.</span>
                     <p>Our space engineers fixing that already</p>
                 </section>
