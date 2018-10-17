@@ -77,7 +77,6 @@ export default class Feed extends Component {
             if(
                 `${currentUserFirstName} ${currentUserLastName}` !==
                 `${meta.authorFirstName} ${meta.authorLastName}`) {
-
                 this._likePost(likedPost.id);
             }
         });
@@ -91,7 +90,6 @@ export default class Feed extends Component {
                     posts: [createdPost, ...posts],
                 }));
             }
-            this._likePost(createdPost.id);
         });
 
         socket.on('remove', (postJSON) => {
@@ -120,7 +118,7 @@ export default class Feed extends Component {
         });
 
         const { data: posts } = await response.json();
-
+        console.log(posts);
         this.setState({
             posts,
             isSpinning: false,
