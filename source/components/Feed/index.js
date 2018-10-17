@@ -60,7 +60,6 @@ export default class Feed extends Component {
         });
 
         const { data: likedPost } = await response.json();
-
         this.setState(({ posts }) => ({
             posts: posts.map(
                 (post) => post.id === likedPost.id ? likedPost : post,
@@ -73,9 +72,18 @@ export default class Feed extends Component {
         const { currentUserFirstName, currentUserLastName } = this.props;
         this._fetchPosts();
         socket.emit('join', GROUP_ID);
+        socket.on('like', (postJSON) => {
+            const { data: likedPost, meta } = JSON.parse(postJSON);
+            if(
+                `${currentUserFirstName} ${currentUserLastName}` !==
+                `${meta.authorFirstName} ${meta.authorLastName}`) {
 
+                this._likePost(likedPost.id);
+            }
+        });
         socket.on('create', (postJSON) => {
             const { data: createdPost, meta } = JSON.parse(postJSON);
+
             if(
                 `${currentUserFirstName} ${currentUserLastName}` !==
                 `${meta.authorFirstName} ${meta.authorLastName}`) {
@@ -83,6 +91,7 @@ export default class Feed extends Component {
                     posts: [createdPost, ...posts],
                 }));
             }
+            this._likePost(createdPost.id);
         });
 
         socket.on('remove', (postJSON) => {
@@ -100,6 +109,7 @@ export default class Feed extends Component {
     componentWillUnmount () {
         socket.removeListener('create');
         socket.removeListener('remove');
+        socket.removeListener('like');
     }
 
     _fetchPosts = async () => {
@@ -134,7 +144,9 @@ export default class Feed extends Component {
         }));
 
     };
-
+    _likeRender = () => {
+       console.log(this.props);
+    }
     render(){
         const { posts, isSpinning } = this.state;
 

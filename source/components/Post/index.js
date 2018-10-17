@@ -32,7 +32,6 @@ export default class Feed extends Component {
             ? <span className = { Styles.cross } onClick = { this._removePost }/> : null
     }
     render(){
-
         const {
             comment,
             created,
