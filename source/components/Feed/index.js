@@ -1,5 +1,7 @@
 // Core
 import React, { Component } from 'react';
+import { Transition } from 'react-transition-group';
+import { fromTo } from 'gsap';
 
 // Components
 import { withProfile } from 'components/HOC/withProfile';
@@ -8,6 +10,7 @@ import StatusBar from "../StatusBar";
 import Composer from '../Composer';
 import Post from '../Post';
 import Spinner from 'components/Spinner';
+import Postman from 'components/Postman';
 
 // Instruments
 import Styles from './styles.m.css';
@@ -144,9 +147,19 @@ export default class Feed extends Component {
         }));
 
     };
-    _likeRender = () => {
-       console.log(this.props);
-    }
+
+    _animateComposerEnter = (composer) => {
+        fromTo(composer, 1, { opacity: 0, rotationX: 50 }, { opacity: 1, rotationX: 0 });
+    };
+
+    _animationPostman = (postman) => {
+        fromTo(postman, 1, { opacity: 0, x: 100 }, { opacity: 1, x: 0 });
+    };
+
+    _hidePostman = (hide) => {
+      fromTo(hide, 1, { opacity: 1, visibility: 'visible' }, { opacity: 0 , visibility: 'visible'});
+    };
+
     render(){
         const { posts, isSpinning } = this.state;
 
@@ -166,8 +179,23 @@ export default class Feed extends Component {
             <section className = { Styles.feed }>
                 <Spinner isSpinning = { isSpinning } />
                 <StatusBar />
-                <Composer _createPost = { this._createPost } />
+                <Transition
+                    appear
+                    in
+                    onEnter = { this._animateComposerEnter }
+                    timeout = { 1000 }>
+                    <Composer _createPost = { this._createPost } />
+                </Transition>
                 { postsJSX }
+                <Transition
+                    in
+                    appear
+                    onEnter = { this._animationPostman }
+                    timeout = { 4000 }
+                    onEntered = { this._hidePostman }
+                >
+                    <Postman />
+                </Transition>
             </section>
         );
     }
