@@ -1,6 +1,6 @@
 // Core
 import React, { Component } from 'react';
-import { Transition } from 'react-transition-group';
+import { Transition, CSSTransition, TransitionGroup } from 'react-transition-group';
 import { fromTo } from 'gsap';
 
 // Components
@@ -152,27 +152,30 @@ export default class Feed extends Component {
         fromTo(composer, 1, { opacity: 0, rotationX: 50 }, { opacity: 1, rotationX: 0 });
     };
 
-    _animationPostman = (postman) => {
-        fromTo(postman, 1, { opacity: 0, x: 100 }, { opacity: 1, x: 0 });
-    };
-
-    _hidePostman = (hide) => {
-      fromTo(hide, 1, { opacity: 1, visibility: 'visible' }, { opacity: 0 , visibility: 'visible'});
-    };
-
     render(){
         const { posts, isSpinning } = this.state;
 
         const postsJSX = posts.map((post) => {
            return(
-               <Catcher key = { post.id }>
-                   <Post
-                       { ...post }
-                       _likePost = { this._likePost }
-                       removePost = { this._removePost }
-                   />
-               </Catcher>
-               )
+                   <CSSTransition
+                       classNames = {{
+                           enter: Styles.postInStart,
+                           enterActive: Styles.postInEnd,
+                       }}
+                       key = { post.id }
+                       timeout = { {
+                          enter: 500,
+                          exit: 400,
+                       } }>
+                       <Catcher>
+                           <Post
+                               { ...post }
+                               _likePost = { this._likePost }
+                               removePost = { this._removePost }
+                           />
+                       </Catcher>
+                   </CSSTransition>
+               );
         });
 
         return (
@@ -186,16 +189,8 @@ export default class Feed extends Component {
                     timeout = { 1000 }>
                     <Composer _createPost = { this._createPost } />
                 </Transition>
-                { postsJSX }
-                <Transition
-                    in
-                    appear
-                    onEnter = { this._animationPostman }
-                    timeout = { 4000 }
-                    onEntered = { this._hidePostman }
-                >
-                    <Postman />
-                </Transition>
+                <Postman />
+                <TransitionGroup>{ postsJSX }</TransitionGroup>
             </section>
         );
     }
