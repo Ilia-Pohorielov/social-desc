@@ -152,6 +152,14 @@ export default class Feed extends Component {
         fromTo(composer, 1, { opacity: 0, rotationX: 50 }, { opacity: 1, rotationX: 0 });
     };
 
+    _animationPostman = (postman) => {
+        fromTo(postman, 1, { opacity: 0, x: 200 }, { opacity: 1, x: 0 });
+    };
+
+    _hidePostman = (hide) => {
+        fromTo(hide, 1, { opacity: 1, x: 0 }, { opacity: 0, x: 200 });
+    };
+
     render(){
         const { posts, isSpinning } = this.state;
 
@@ -189,7 +197,15 @@ export default class Feed extends Component {
                     timeout = { 1000 }>
                     <Composer _createPost = { this._createPost } />
                 </Transition>
-                <Postman />
+                <Transition
+                    in
+                    appear
+                    onEnter = { this._animationPostman }
+                    timeout = { 4000 }
+                    onEntered = { this._hidePostman }
+                >
+                    <Postman />
+                </Transition>
                 <TransitionGroup>{ postsJSX }</TransitionGroup>
             </section>
         );
