@@ -1,13 +1,13 @@
 // Core
 import React from 'react';
-import { mount, configure } from 'enzyme';
-import Adapter from 'enzyme-adapter-react-16';
+import { mount } from 'enzyme';
 import { Composer } from './';
-
-configure({ adapter: new Adapter() });
 
 const props = {
     _createPost: jest.fn(),
+    avatar: '../../theme/assets/lisa.png',
+    currentUserFirstName: 'Илья',
+    currentUserLastName: 'Погорелов',
 };
 
 const comment = 'Merry christmas!';
@@ -24,6 +24,8 @@ const result = mount(<Composer { ...props } />);
 
 const _submitCommentSpy = jest.spyOn(result.instance(), '_submitComment');
 const _handleFormSubmitSpy = jest.spyOn(result.instance(), '_handleFormSubmit');
+const _updateComment = jest.spyOn(result.instance(), '_updateComment');
+const _submitOnEnter = jest.spyOn(result.instance(), '_submitOnEnter');
 
 describe('Composer component:', () => {
     test('should have 1 "section" element', () => {
@@ -85,6 +87,11 @@ describe('Composer component:', () => {
     });
 
     test('_submitComment and _handleFormSubmit class methods should be invoked once after form is submitted', () => {
+        expect(_submitCommentSpy).toHaveBeenCalledTimes(1);
+        expect(_handleFormSubmitSpy).toHaveBeenCalledTimes(1);
+    });
+
+    test('_updateComment and _submitOnEnter class methods should be invoked once after form is submitted', () => {
         expect(_submitCommentSpy).toHaveBeenCalledTimes(1);
         expect(_handleFormSubmitSpy).toHaveBeenCalledTimes(1);
     });
